@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class Player
 {
     public Dictionary<DynamicDieType, DynamicDie> Dice { get; private set; }
     public List<DynamicDieSide> Inventory { get; private set; }
     public PlayerStats Model { get; private set; }
+    public PlayerView View { get; private set; }
     public DynamicDieSide CurrentFace { get; private set; }
 
     public DynamicDieSide Roll(DungeonDieSide side)
@@ -36,7 +38,7 @@ public class Player : MonoBehaviour
         return CurrentFace;
     }
 
-    public Player(DynamicDie encounter, DynamicDie trap, DynamicDie loot, PlayerStats model)
+    public Player(DynamicDie encounter, DynamicDie trap, DynamicDie loot, PlayerStats model, PlayerView view)
     {
         Dice = new Dictionary<DynamicDieType, DynamicDie>();
         Dice.Add(DynamicDieType.Encounter, encounter);
@@ -44,6 +46,7 @@ public class Player : MonoBehaviour
         Dice.Add(DynamicDieType.Treasure, loot);
 
         Model = model;
+        View = view;
     }
 }
 

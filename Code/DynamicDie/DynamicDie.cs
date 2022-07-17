@@ -30,13 +30,37 @@ public class DynamicDieSide
     public event Action<DynamicDieEffect> OnSideEffect;
     public bool IsPermanent;
 
-    public void DoEffect(PlayerStats stats)
+    public string DoEffect(PlayerStats stats)
     {
         stats.Blood += _Effect.Healing;
         stats.Gold += _Effect.Gold;
 
         stats.Blood -= _Effect.Damage;
         stats.Gold -= _Effect.Steal;
+
+        string text = "";
+
+        if(_Effect.Healing > 0)
+        {
+            text += $"Healed {_Effect.Healing}";
+        }
+
+        if (_Effect.Gold > 0)
+        {
+            text += $"Gold gained! {_Effect.Gold}";
+        }
+
+        if (_Effect.Damage > 0)
+        {
+            text += $"Damage taken! {_Effect.Damage}";
+        }
+
+        if (_Effect.Steal > 0)
+        {
+            text += $"Gold stolen! {_Effect.Steal}";
+        }
+
+        return text;
     }
 
     private DynamicDieEffect _Effect;

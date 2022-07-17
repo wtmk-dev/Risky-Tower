@@ -28,7 +28,7 @@ public class GameSystem
 
     private Player _Player;
     private TowerView _View;
-    public GameSystem(Player player, TowerView view)
+    public GameSystem(Player player, TowerView view, DungeonDieView dungeonDieView)
     {
         _Player = player;
         _View = view;
@@ -43,13 +43,12 @@ public class GameSystem
         _GamePhase.RegisterEnter(GamePhase.SelectAction, OnEnter_SelectAction);
         _GamePhase.RegisterEnter(GamePhase.SelectRollAgain, OnEnter_SelectRollAgain);
 
-        _DungeonDie = new DungeonDie();
+        _DungeonDie = new DungeonDie(dungeonDieView);
 
         _Model = new GameSystemModel();
         _Model.Floor = 0;
         _Model.Round = 0;
         _Model.CurrentDungeonRoll = DungeonDieSide.Exit;
-
 
         _View.Encounter.onClick.AddListener(OnClick_Encounter);
         _View.Trap.onClick.AddListener(OnClick_Trap);
@@ -80,6 +79,7 @@ public class GameSystem
 
         _Model.Round++;
         _View.Round.SetText($"Round {_Model.Round}");
+        _Player.View.EffectText.SetText("");
 
         _GamePhase.StateChange(GamePhase.RollDungeon);
     }
@@ -87,6 +87,7 @@ public class GameSystem
     private void OnClick_Exit()
     {
         _View.RollAgainSelection.SetActive(false);
+        _Player.View.EffectText.SetText("");
         _GamePhase.StateChange(GamePhase.Exit);
     }
 
@@ -131,12 +132,12 @@ public class GameSystem
     private void OnEnter_RollDungeon()
     {
         _Debug.Log("OnEnter_RollDungeon");
+        _Model.CurrentDungeonRoll = _DungeonDie.Roll(OnDungeonRollComplete);
+    }
 
-        int roll = _Tools.Pick(_DungeonDie.Die.Count);
-        _Model.CurrentDungeonRoll = _DungeonDie.Die[roll];
-
+    private void OnDungeonRollComplete()
+    {
         _Debug.Log("Dungeon rolled " + _Model.CurrentDungeonRoll);
-
         _View.CurrentDie.SetText(_Model.CurrentDungeonRoll.ToString());
 
         _GamePhase.StateChange(GamePhase.RollPlayer);
@@ -155,6 +156,24 @@ public class GameSystem
                 _View.NextFloor.gameObject.SetActive(true);
                 _GamePhase.StateChange(GamePhase.SelectRollAgain);
                 break;
+            case DungeonDieSide.Encounter:
+                _View.DieSelection.SetActive(true);
+                _View.Encounter.gameObject.SetActive(true);
+                _View.Trap.gameObject.SetActive(false);
+                _View.Treasure.gameObject.SetActive(false);
+                break;
+            case DungeonDieSide.Trap:
+                _View.DieSelection.SetActive(true);
+                _View.Encounter.gameObject.SetActive(false);
+                _View.Trap.gameObject.SetActive(true);
+                _View.Treasure.gameObject.SetActive(false);
+                break;
+            case DungeonDieSide.Treasure:
+                _View.DieSelection.SetActive(true);
+                _View.Encounter.gameObject.SetActive(false);
+                _View.Trap.gameObject.SetActive(false);
+                _View.Treasure.gameObject.SetActive(true);
+                break;
             default:
                 _Player.Roll(_Model.CurrentDungeonRoll);
                 _GamePhase.StateChange(GamePhase.Resolve);
@@ -167,7 +186,9 @@ public class GameSystem
         _Debug.Log("OnEnter_Resolve");
         _View.DieSelection.SetActive(false);
 
-        _Player.CurrentFace.DoEffect(_Player.Model);
+        string effect = _Player.CurrentFace.DoEffect(_Player.Model);
+
+        _Player.View.EffectText.SetText(effect);
 
         _View.Blood.SetText($"Blood {_Player.Model.Blood}");
         _View.Gold.SetText($"Gold {_Player.Model.Gold}");
