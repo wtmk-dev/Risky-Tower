@@ -8,6 +8,7 @@ public class DungeonDieView : MonoBehaviour
 {
     public Image Die;
     public List<Sprite> DungeonDieFaces;
+    public Sprite Encounter, Trap, Treasure, Exit, Wild;
 
     public void DoRoll(DungeonDieSide side, Action onClomplete)
     {
@@ -19,16 +20,28 @@ public class DungeonDieView : MonoBehaviour
         int count = 0;
         while(count < DungeonDieFaces.Count)
         {
+            _Tools.Shuffle<Sprite>(DungeonDieFaces);
             Die.sprite = DungeonDieFaces[count];
             count++;
             yield return new WaitForSeconds(0.3f);
-
-            _Tools.Shuffle<Sprite>(DungeonDieFaces);
         }
 
-        //set die to roll
+        Die.sprite = _DungeonDieMap[side];
+        yield return new WaitForSeconds(0.3f);
         onClomplete();
     }
 
+    private Dictionary<DungeonDieSide, Sprite> _DungeonDieMap = new Dictionary<DungeonDieSide, Sprite>();
     private WTMK _Tools = WTMK.Instance;
+
+    private void Start()
+    {
+        _DungeonDieMap.Clear();
+
+        _DungeonDieMap.Add(DungeonDieSide.Encounter, Encounter);
+        _DungeonDieMap.Add(DungeonDieSide.Trap, Trap);
+        _DungeonDieMap.Add(DungeonDieSide.Treasure, Treasure);
+        _DungeonDieMap.Add(DungeonDieSide.Exit, Exit);
+        _DungeonDieMap.Add(DungeonDieSide.Wild, Wild);
+    }
 }

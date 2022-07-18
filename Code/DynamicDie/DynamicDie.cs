@@ -7,6 +7,7 @@ public class DynamicDie
 {
     public int Count { get => _Sides.Count; }
     public DynamicDieSide CurrentFace { get => _Sides[0]; }
+    public List<DynamicDieSide> Sides { get => _Sides; }
 
     public DynamicDieSide Roll()
     {
@@ -29,6 +30,7 @@ public class DynamicDieSide
 {
     public event Action<DynamicDieEffect> OnSideEffect;
     public bool IsPermanent;
+    public Sprite Icon { get => _Effect.Icon; }
 
     public string DoEffect(PlayerStats stats)
     {
@@ -77,13 +79,15 @@ public class DynamicDieEffect
     public int Gold { get; private set; }
     public int Healing { get; private set; }
     public int Steal { get; private set; }
+    public Sprite Icon { get; private set; }
 
-    public DynamicDieEffect(int damage, int gold, int healing, int steal)
+    public DynamicDieEffect(int damage, int gold, int healing, int steal, Sprite icon)
     {
         Damage = damage;
         Gold = gold;
         Healing = healing;
         Steal = steal;
+        Icon = icon;
     }
 
     public DynamicDieEffect()

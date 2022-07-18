@@ -28,6 +28,7 @@ public class GameSystem
 
     private Player _Player;
     private TowerView _View;
+    private bool _IsRolling;
     public GameSystem(Player player, TowerView view, DungeonDieView dungeonDieView)
     {
         _Player = player;
@@ -80,6 +81,8 @@ public class GameSystem
         _Model.Round++;
         _View.Round.SetText($"Round {_Model.Round}");
         _Player.View.EffectText.SetText("");
+        _View.DieSelection.SetActive(false);
+        _IsRolling = false;
 
         _GamePhase.StateChange(GamePhase.RollDungeon);
     }
@@ -93,19 +96,39 @@ public class GameSystem
 
     private void OnClick_Encounter()
     {
-        _Player.Roll(DynamicDieType.Encounter);
-        _GamePhase.StateChange(GamePhase.Resolve);
+        if(_IsRolling)
+        {
+            return;
+        }
+        _IsRolling = true;
+        var outcome = _Player.Roll(DynamicDieType.Encounter);
+        _Player.View.DoRoll(_Player.Dice[DynamicDieType.Encounter], DynamicDieType.Encounter, outcome, OnRollComplete);
     }
 
     private void OnClick_Trap()
     {
-        _Player.Roll(DynamicDieType.Trap);
-        _GamePhase.StateChange(GamePhase.Resolve);
+        if (_IsRolling)
+        {
+            return;
+        }
+        _IsRolling = true;
+        var outcome = _Player.Roll(DynamicDieType.Trap);
+        _Player.View.DoRoll(_Player.Dice[DynamicDieType.Trap], DynamicDieType.Trap, outcome, OnRollComplete);
     }
 
     private void OnClick_Treasure()
     {
-        _Player.Roll(DynamicDieType.Treasure);
+        if (_IsRolling)
+        {
+            return;
+        }
+        _IsRolling = true;
+        var outcome = _Player.Roll(DynamicDieType.Treasure);
+        _Player.View.DoRoll(_Player.Dice[DynamicDieType.Treasure], DynamicDieType.Treasure, outcome, OnRollComplete);
+    }
+
+    private void OnRollComplete()
+    {
         _GamePhase.StateChange(GamePhase.Resolve);
     }
 
@@ -114,10 +137,18 @@ public class GameSystem
         _Debug.Log("Enter");
 
         _Model.Floor++;
+
+        if(_Model.Floor > _Player.Model.HighestFloor)
+        {
+            _Player.Model.HighestFloor = _Model.Floor;
+        }
+
         _Model.Round = 0;
+
         _View.Floor.SetText($"Floor {_Model.Floor}");
         _View.Round.SetText($"Round {_Model.Round}");
         _View.CurrentDie.SetText("");
+        
 
         _DungeonDie.EnterFloor(_Model.Floor);
         _GamePhase.StateChange(GamePhase.RollDungeon);
@@ -184,7 +215,6 @@ public class GameSystem
     private void OnEnter_Resolve()
     {
         _Debug.Log("OnEnter_Resolve");
-        _View.DieSelection.SetActive(false);
 
         string effect = _Player.CurrentFace.DoEffect(_Player.Model);
 
@@ -236,7 +266,6 @@ public enum GamePhase
     SelectAction,
     SelectRollAgain
 }
-
 
 
 /*

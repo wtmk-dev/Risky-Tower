@@ -55,4 +55,5 @@ public class PlayerStats
     public int Blood { get; set; }
     public int Gold { get; set; }
     public int HighestFloor { get; set; }
+    public int Level { get; set; }
 }

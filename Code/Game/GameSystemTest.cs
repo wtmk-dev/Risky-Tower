@@ -8,7 +8,7 @@ public class GameSystemTest : MonoBehaviour
     private StartView _StartView;
 
     [SerializeField]
-    private TavernView _TavenView;
+    private TavernView _TavernView;
 
     [SerializeField]
     private TowerView _TowerView;
@@ -53,13 +53,13 @@ public class GameSystemTest : MonoBehaviour
 
         Dood.IsLogging = false;
 
-        _TavenView.EnterTower.onClick.AddListener(OnClick_EnterTower);
+        _TavernView.EnterTower.onClick.AddListener(OnClick_EnterTower);
         _TowerView.Exit.onClick.AddListener(OnClick_ExitTower);
         _StartView.StartGame.onClick.AddListener(OnClick_StartGame);
         _GameOverView.Restart.onClick.AddListener(OnClick_Restart);
 
         _TowerView.gameObject.SetActive(false);
-        _TavenView.gameObject.SetActive(false);
+        _TavernView.gameObject.SetActive(false);
         _GameOverView.gameObject.SetActive(false);
         _StartView.gameObject.SetActive(true);
     }
@@ -77,7 +77,7 @@ public class GameSystemTest : MonoBehaviour
 
     private void OnClick_StartGame()
     {
-        _TavenView.gameObject.SetActive(true);
+        _TavernView.Enter(_Player);
         _StartView.gameObject.SetActive(false);
 
         _SoundManager.PlayOnMainAudio(_TavernLoop, 27f, true);
@@ -85,8 +85,6 @@ public class GameSystemTest : MonoBehaviour
 
     private void OnClick_ExitTower()
     {
-        _TavenView.gameObject.SetActive(true);
-
         if(_Player.Model.Gold < 0)
         {
             _Player.Model.Blood -= Mathf.Abs(_Player.Model.Gold);
@@ -104,11 +102,13 @@ public class GameSystemTest : MonoBehaviour
             _TowerView.gameObject.SetActive(false);
             _SoundManager.PlayOnMainAudio(_TavernLoop, 27f, true);
         }
+
+        _TavernView.Enter(_Player);
     }
 
     private void OnClick_EnterTower()
     {
-        _TavenView.gameObject.SetActive(false);
+        _TavernView.gameObject.SetActive(false);
         _TowerView.gameObject.SetActive(true);
 
         _GameSystem.Start();

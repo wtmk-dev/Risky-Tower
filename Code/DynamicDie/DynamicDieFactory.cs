@@ -38,31 +38,38 @@ public class DynamicDieSideFactory
         switch(name)
         {
             case "Start_Enc_0":
-                var effect = new DynamicDieEffect(1, 0, 0, 0);
+                var lightHit = Resources.Load<Sprite>("Effect/Start_Enc_0");
+                var effect = new DynamicDieEffect(1, 0, 0, 0, lightHit);
                 return new DynamicDieSide(effect, true);
 
             case "Start_Enc_1":
-                var effect2 = new DynamicDieEffect(0, 1, 0, 0);
+                var enc1 = Resources.Load<Sprite>("Effect/Start_Enc_1");
+                var effect1 = new DynamicDieEffect(0, 1, 0, 0, enc1);
+                return new DynamicDieSide(effect1);
+
+            case "Start_Enc_2":
+                var enc2 = Resources.Load<Sprite>("Effect/Start_Enc_2");
+                var effect2 = new DynamicDieEffect(0, 0, 1, 1, enc2);
                 return new DynamicDieSide(effect2);
 
-            case "Start_Enc_3":
-                var effect3 = new DynamicDieEffect(0, 0, 1, 1);
-                return new DynamicDieSide(effect3);
-
             case "Start_Trap_0":
-                var t0 = new DynamicDieEffect(0, 0, 0, 1);
+                var trap0 = Resources.Load<Sprite>("Effect/Start_Trap_0");
+                var t0 = new DynamicDieEffect(0, 0, 0, 1, trap0);
                 return new DynamicDieSide(t0, true);
 
             case "Start_Trap_1":
-                var t1 = new DynamicDieEffect(1, 0, 0, 1);
+                var trap1 = Resources.Load<Sprite>("Effect/Start_Trap_1");
+                var t1 = new DynamicDieEffect(1, 0, 0, 1, trap1);
                 return new DynamicDieSide(t1);
 
             case "Start_Loot_0":
-                var l0 = new DynamicDieEffect(0, 1, 0, 0);
+                var loot0 = Resources.Load<Sprite>("Effect/Start_Loot_0");
+                var l0 = new DynamicDieEffect(0, 1, 0, 0, loot0);
                 return new DynamicDieSide(l0, true);
 
             case "Start_Loot_1":
-                var l1 = new DynamicDieEffect(0, 0, 1, 0);
+                var loot1 = Resources.Load<Sprite>("Effect/Start_Loot_1");
+                var l1 = new DynamicDieEffect(0, 0, 1, 0, loot1);
                 return new DynamicDieSide(l1);
 
         }
