@@ -100,6 +100,10 @@ public class GameSystem
         {
             return;
         }
+
+        _View.Trap.gameObject.SetActive(false);
+        _View.Treasure.gameObject.SetActive(false);
+
         _IsRolling = true;
         var outcome = _Player.Roll(DynamicDieType.Encounter);
         _Player.View.DoRoll(_Player.Dice[DynamicDieType.Encounter], DynamicDieType.Encounter, outcome, OnRollComplete);
@@ -111,6 +115,10 @@ public class GameSystem
         {
             return;
         }
+
+        _View.Encounter.gameObject.SetActive(false);
+        _View.Treasure.gameObject.SetActive(false);
+
         _IsRolling = true;
         var outcome = _Player.Roll(DynamicDieType.Trap);
         _Player.View.DoRoll(_Player.Dice[DynamicDieType.Trap], DynamicDieType.Trap, outcome, OnRollComplete);
@@ -122,6 +130,10 @@ public class GameSystem
         {
             return;
         }
+
+        _View.Encounter.gameObject.SetActive(false);
+        _View.Trap.gameObject.SetActive(false);
+
         _IsRolling = true;
         var outcome = _Player.Roll(DynamicDieType.Treasure);
         _Player.View.DoRoll(_Player.Dice[DynamicDieType.Treasure], DynamicDieType.Treasure, outcome, OnRollComplete);
@@ -239,6 +251,9 @@ public class GameSystem
     {
         _Debug.Log("OnEnter_SelectAction");
         _View.DieSelection.SetActive(true);
+        _View.Encounter.gameObject.SetActive(true);
+        _View.Trap.gameObject.SetActive(true);
+        _View.Treasure.gameObject.SetActive(true);
     }
 
     private void OnEnter_SelectRollAgain()
